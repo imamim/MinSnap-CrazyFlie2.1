@@ -4,10 +4,6 @@ from gammaSwarm import GammaSwarm
 from MerkezcilClass import *
 from UavClass import *
 from Initializer import *
-from utils import Plot
-from GammaSwarm.srv import RunFireNodeMessage
-from GammaSwarm.msg import FireLocations
-#from formaitons import *
 from copy import deepcopy
 import rospy
 import numpy as np
