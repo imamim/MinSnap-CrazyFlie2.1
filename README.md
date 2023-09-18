@@ -108,9 +108,7 @@ https://pip.pypa.io/en/stable/
 Gamma Swarm
 ├── CMakeLists.txt
 ├── launch
-│   ├── allRun.launch
-│   ├── systemLaunch.launch
-│   └── tryRun.launch
+│   └── allRun.launch
 ├── msg
 │   ├── example.msg
 │   ├── FullCommand.msg
@@ -125,30 +123,33 @@ Gamma Swarm
 ├── src
 │   ├── CITATION.cff
 │   ├── GammaSwarm
-│   │   ├── mainSystem
+│   │   ├── logging
+│   │   │   ├── classes.py
+│   │   │   ├── gammaAnalyser.py
+│   │   │   ├── gammaLogger.py
+│   │   │   └── logo.png
+│   │   └── mainSystem
 │   │   │   ├── enums.py
-│   │   │   ├── eskiKod.py
-│   │   │   ├── formaitons.py
 │   │   │   ├── gammaSwarm.py
-│   │   │   ├── gecici_Formation.py
-│   │   │   ├── gecici_utils.py
 │   │   │   ├── Initializer.py
-│   │   │   ├── mainServer.py
+│   │   │   ├── initializer_util.py
 │   │   │   ├── MerkezcilClass.py
 │   │   │   ├── mission.py
 │   │   │   ├── Modes.py
 │   │   │   ├── Parameters.py
-│   │   │   ├── README.md
-│   │   │   ├── real_control.py
-│   │   │   ├── real_executer.py
 │   │   │   ├── State.py
-│   │   │   └── UavClass.py
+│   │   │   ├── UavClass.py
+│   │   │   └── utils.py
 │   │   └── simulationSystems
-│   │       ├── ControllerUtils.py
-│   │       ├── environment.py
-│   │       ├── obstacle.urdf
-│   │       ├── simulation_executer.py
-│   │       └── SimulationParameter.py
+│   │   │   ├── ControllerUtils.py
+│   │   │   ├── environment.py
+│   │   │   ├── obstacle.urdf
+│   │   │   ├── simulation_executer.py
+│   │   │   └── SimulationParameter.py
+│   │   └── realSystems
+│   │   │   ├── cfSwarm.py
+│   │   │   ├── realExecuter.py
+│   │   │   └── realManager.py
 │   ├── LICENSE
 │   ├── README.md
 │   └── setup.py
