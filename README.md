@@ -13,7 +13,7 @@ Download the package with git clone or from IDE.
 
 ```
 cd catkin_ws
-git clone https://github.com/ITU-GammaTeam/GammaSwarm.git
+git clone https://github.com/imamim/MinSnap-CrazyFlie2.1.git
 ```
 
 Then run the `catkin_make` command at main directory.
@@ -51,35 +51,6 @@ And add this two line you last line of .bashrc file:
 source /home/Your_Computer_username/catkin_ws/crazyswarm/ros_ws/devel/setup.bash
 source /home/Your_Computer_username/catkin_ws/GammaSwarm/devel/setup.bash
 ```
-
-
-# CrazySwarm Setup
-On the system we are use the CrazySwarm currently. For installation follow these steps:
-```
-cd
-cd catkin_ws
-export CSW_PYTHON=python3
-sudo apt install -y ros-noetic-tf ros-noetic-tf-conversions ros-noetic-joy
-sudo apt install -y libpcl-dev libusb-1.0-0-dev
-sudo apt install -y swig lib${CSW_PYTHON}-dev ${CSW_PYTHON}-pip
-
-${CSW_PYTHON} -m pip install pytest numpy PyYAML scipy
-${CSW_PYTHON} -m pip install vispy
-${CSW_PYTHON} -m pip install matplotlib
-
-sudo apt install -y ffmpeg
-
-${CSW_PYTHON} -m pip install ffmpeg-python
-
-git clone https://github.com/USC-ACTLab/crazyswarm.git
-cd crazyswarm
-./build.sh
-
-cd ros_ws/src/crazyswarm/scripts
-source ../../../devel/setup.bash
-$CSW_PYTHON -m pytest
-```
-Then installation done! Please close the terminal and open again!
 
 Configure all of the dependencies of PyBullet
 # Dependencies
