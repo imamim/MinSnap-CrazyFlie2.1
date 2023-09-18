@@ -321,6 +321,12 @@ class UavClass:
             return loiter_completed
 
 
+    #Example of another algoirthm use for individual uavs.
+    def collisionAvoidance(self):
+        output = []
+        return output
+
+
     def generateCommandMessage(self):
         msg = UavCommand()
         msg.id = self.id

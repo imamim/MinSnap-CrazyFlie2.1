@@ -23,7 +23,6 @@ class VelocityAviary(BaseAviary):
                  gui=False,
                  record=False,
                  obstacles=False,
-                 fire_area = False,
                  user_debug_gui=True
                  ):
         """Initialization of an aviary environment for or high-level planning.
@@ -74,7 +73,6 @@ class VelocityAviary(BaseAviary):
                          gui=gui,
                          record=record,
                          obstacles=obstacles,
-                         fire_area = fire_area,
                          user_debug_gui=user_debug_gui
                          )
         #### Set a limit on the maximum target speed ###############

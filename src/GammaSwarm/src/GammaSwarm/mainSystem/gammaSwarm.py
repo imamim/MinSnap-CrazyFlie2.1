@@ -22,13 +22,7 @@ class GammaSwarm:
         self.swarm_center = Position(center[0],center[1],center[2])
         
         self.initialize()
-        self.fire_mission_data = None #Initialize for Fire Mission
-        self.fire_locations = None #Initialize for Fire Mission
-        self.fire_area_locations = None
-        self.fire_center = None
 
-        #TODO Obstacle CallBack!
-        self.obs_callback_dict = dict()
         
     def initialize(self):
         rospy.init_node('GammaSwarm')

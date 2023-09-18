@@ -47,7 +47,10 @@ class Modes:
                 uav_result = True
 
             completed_list.append(uav_result)
+
+            #Example of another algoirthm use for individual uavs.
             uav.collisionAvoidance()
+
             uav.generateCommandMessage()
         self.Swarm.publishCommand()
         
@@ -78,7 +81,10 @@ class Modes:
                 uav_result = True #Bundan dolayı sıkıntı oluyor!!!! Activation Flag Mevzusu
 
             completed_list.append(uav_result)
+
+            #Example of another algoirthm use for individual uavs.
             uav.collisionAvoidance()
+
             uav.generateCommandMessage()
         self.Swarm.publishCommand()
         
@@ -113,6 +119,7 @@ class Modes:
                 uav_result = True
                 i+=1
             completed_list.append(uav_result)
+            #Example of another algoirthm use for individual uavs.
             uav.collisionAvoidance()
             uav.generateCommandMessage()
         self.Swarm.publishCommand()
@@ -156,7 +163,7 @@ class Modes:
                 uav.navigationEqualizer(desired_traj_state.desired_position,desired_traj_state.desired_velocity,desired_traj_state.desired_acceleration,desired_traj_state.desired_yaw,desired_traj_state.desired_omega)
                 #Calculate actual error
                 uav_result = uav.calculateNavigationError(self.trajectory_class.waypoints[-1],self.Swarm.swarm_center,navigation_params.threshold) #After navigation, if norm<Thrsehold uav_result become True
-                #Not used
+                #Not used #Example of another algoirthm use for individual uavs.
                 uav.collisionAvoidance()
                 #Then update message!
                 uav.generateTrajectoryCommandMessage()
@@ -233,7 +240,7 @@ class Modes:
                 uav.individualNavigationEqualizer(desired_traj_state)
                 #Calculate actual error
                 uav_result = uav.individualCalculateNavigationError(self.trajectory_class.waypoints[-1],self.Swarm.swarm_center,navigation_params.threshold) #After navigation, if norm<Thrsehold uav_result become True
-                #Not used
+                #Not used #Example of another algoirthm use for individual uavs.
                 uav.collisionAvoidance()
                 #Then update message!
                 uav.generateTrajectoryCommandMessage()
@@ -273,6 +280,7 @@ class Modes:
             else :
                 uav_result = True
             completed_list.append(uav_result)
+            #Example of another algoirthm use for individual uavs.
             uav.collisionAvoidance()
             uav.generateCommandMessage()
             #Sonra publish edilecek #uav.command_message()

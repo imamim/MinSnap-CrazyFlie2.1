@@ -17,7 +17,7 @@ def reason():
 
 modeList = [
 
-            {MISSIONMODES.initialize  :      InitializerParams(number_of_agent = 5,simulation_enabled = False,real_enabled = True, starting_formation = FORMATIONTYPES.common, area_dimension = [(-1.6, 1.6), (-1.9, 1.9), (0, 1.5)])},
+            {MISSIONMODES.initialize  :      InitializerParams(number_of_agent = 5,simulation_enabled = True,real_enabled = False, starting_formation = FORMATIONTYPES.common, area_dimension = [(-1.6, 1.6), (-1.9, 1.9), (0, 1.5)])},
             {MISSIONMODES.take_off    :      TakeoffParams(takeoff_height = 0.7 ,threshold = 0.08)} , 
             {MISSIONMODES.loiter      :      LoiterParams(loiter_time = 3)} ,
             
