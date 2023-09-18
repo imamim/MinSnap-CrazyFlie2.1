@@ -230,6 +230,35 @@ class UavClass:
             self.desired_velocity.wz = 0
         return landing_flag
 
+
+    def navigationEqualizer(self,traj_pos,traj_vel,traj_acc,traj_yaw,traj_omega):
+        "Calculate Trajectory Output Without controller"
+        r_diff = np.array([self.position_wrt_center.x,self.position_wrt_center.y,self.position_wrt_center.z]) #Hep sabit bu position_wrt_center ? Traj boyunca
+        velocity = traj_vel + np.cross(traj_omega,r_diff)
+        alpha = (traj_omega-self.old_omega)*60
+        self.old_omega = traj_omega.copy()
+        acceleration = traj_acc + np.cross(alpha,r_diff) - (np.linalg.norm(traj_omega)**2)*r_diff
+        position = r_diff + traj_pos
+        
+        self.desired_trajectory_position.x = position[0]
+        self.desired_trajectory_position.y = position[1]
+        self.desired_trajectory_position.z = position[2]
+
+        self.desired_trajectory_velocity.x = velocity[0]
+        self.desired_trajectory_velocity.y = velocity[1]
+        self.desired_trajectory_velocity.z = velocity[2]
+        
+        self.desired_trajectory_acceleration.x = acceleration[0]
+        self.desired_trajectory_acceleration.y = acceleration[1]
+        self.desired_trajectory_acceleration.z = acceleration[2]
+
+        self.desired_trajectory_yaw = traj_yaw
+
+        self.desired_trajectory_omega.x = traj_omega[0]
+        self.desired_trajectory_omega.y = traj_omega[1]
+        self.desired_trajectory_omega.z = traj_omega[2]
+
+
     def individualNavigationEqualizer(self,desired_traj_state): #TODO Karısılıklık olmamasi icin fonksiyon ismi degistirilebilir!
         self.desired_trajectory_position.x = desired_traj_state.desired_position[0]
         self.desired_trajectory_position.y = desired_traj_state.desired_position[1]
@@ -249,6 +278,24 @@ class UavClass:
         self.desired_trajectory_omega.y = desired_traj_state.desired_omega[1]
         self.desired_trajectory_omega.z = desired_traj_state.desired_omega[2]
 
+
+    def calculateNavigationError(self,last_point,swarm_center,threshold):
+        "Formasyon halindeki hesap"
+        navigation_completed = False
+        r_diff = np.array([self.position_wrt_center.x,self.position_wrt_center.y,self.position_wrt_center.z])
+        #last point swarm center'in olması gereken pointti
+        desired_last_pose = last_point+r_diff #Last position!
+        #print(desired_last_pose)
+        diff = np.array([self.current_position.x-desired_last_pose[0],self.current_position.y-desired_last_pose[1],self.current_position.z-desired_last_pose[2]])
+        norm = np.linalg.norm(diff)
+        print("navigation_norm",norm)
+        if norm<threshold:
+            navigation_completed = True
+            self.initial_position = Position(desired_last_pose[0], desired_last_pose[1],desired_last_pose[2]) #Thats okey for other controller. PID mod bitsede son position goturur.
+            self.position_wrt_center = Position(desired_last_pose[0] - swarm_center.x, desired_last_pose[1]-swarm_center.y,desired_last_pose[2]-swarm_center.z)
+
+        return navigation_completed
+    
     
     def individualCalculateNavigationError(self,last_point,swarm_center,threshold):
         "Individual hesap"

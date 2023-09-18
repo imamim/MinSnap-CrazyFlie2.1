@@ -63,12 +63,6 @@ class Modes:
 
 
 
-
-
-
-
-
-
     #TODO Loiter Buglari analiz edilip düzeltilecek, zamansız loiter modu da eklenecek, eğer -1 ise time gibi veya başka şekilde çözülür.
     def loiterStep(self,loiter_params):
         completed_list = []
@@ -107,7 +101,7 @@ class Modes:
         if self.central_formation.formation_created == False:
             self.central_formation.meanAnglePointCalculator(self.Swarm.uav_count,self.Swarm.uav_list,self.Swarm.swarm_center)
             self.central_formation.generateFormationPoints(self.Swarm.swarm_center,self.Swarm.uav_count,formation_params)
-            #self.central_formation.FairMacar(self.Swarm.uav_list,self.Swarm.uav_count)
+            self.central_formation.FairMacar(self.Swarm.uav_list,self.Swarm.uav_count)
             self.central_formation.formation_created = True
         i = 0
         for uav in self.Swarm.uav_list:
@@ -131,7 +125,6 @@ class Modes:
             self.central_formation.formation_created = False
             #TODO TUM PARAMETRELER SIFIRLANACK MERKEZCILCLASSTAKI        
         del completed_list
-
 
 
 
@@ -195,14 +188,6 @@ class Modes:
 
 
 
-
-
-
-
-
-
-
-
     #TODO If usage neede, pls go in the mission.py ---> change simpleNavigationStep() ---->individualNavigationStep()
     #Pls use only 1 drone when flight! Elhamdulillah navigation cozuldu
     """
@@ -260,12 +245,6 @@ class Modes:
             del self.trajectory_executer
             #TODO TUM PARAMETRELER SIFIRLANACK MERKEZCILCLASSTAKI        
         del completed_list
-
-
-
-
-
-
 
 
 

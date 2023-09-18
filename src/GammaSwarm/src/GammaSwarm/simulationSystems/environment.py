@@ -8,8 +8,6 @@ import pybullet as p
 import rospy
 from SimulationParameter import *
 
-#from GammaSwarm.msg import UavState
-#from GammaSwarm.msg import FullState
 
 from GammaSwarm.srv import ServiceMessage
 
@@ -35,20 +33,18 @@ class Environment:
 
         self.server()
 
-        #for i in range(self.num_drones):
-        #    INIT_XYZS[i,0] = data[i].pose.position.x
-        #    INIT_XYZS[i,1] = data[i].pose.position.y
-        #    INIT_XYZS[i,2] = data[i].pose.position.z
 
-        #    euler = p.getEulerFromQuaternion([data[i].pose.orientation.x, data[i].pose.orientation.y, data[i].pose.orientation.z, data[i].pose.orientation.w])
-
-        #    INIT_RPYS[i,0] = euler[0]
-        #    INIT_RPYS[i,1] = euler[1]
-        #    INIT_RPYS[i,2] = euler[2] 
-            
-        #self.params.INIT_XYZS = INIT_XYZS
-        #self.params.INIT_RPYS = INIT_RPYS
+    def server(self):
+        rospy.init_node("SIMULATION")
+        self.service = rospy.Service("Simulation-Initializer-Server", ServiceMessage, self.initializeSim)
+        r = rospy.Rate(10)
+        while not self.server_manual_shutdown:
+            r.sleep()
         
+        self.service.shutdown()
+        del self.service
+
+
     def initializeSim(self, request):
         print("Initializing Simulation")
         ##################################
@@ -72,17 +68,7 @@ class Environment:
         self.server_manual_shutdown = True
         return True
         
-    def server(self):
-        rospy.init_node("SIMULATION")
-        self.service = rospy.Service("Simulation-Initializer-Server", ServiceMessage, self.initializeSim)
-        r = rospy.Rate(10)
-        while not self.server_manual_shutdown:
-            r.sleep()
-        
-        self.service.shutdown()
-        del self.service
-                
-
+    
 
     # enter the type as starting formation type
     def properEnv(self):

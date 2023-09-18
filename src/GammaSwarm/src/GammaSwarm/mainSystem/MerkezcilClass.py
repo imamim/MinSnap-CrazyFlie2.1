@@ -89,7 +89,24 @@ class FormationClass:
         nodes = self.point_eliminator(nodes,agent_number)
         return nodes
     
-    
+    def FairMacar(self,uav_list,number_of_drones):
+        positions = []
+        for uav in uav_list:
+            positions.append([uav.current_position.x,uav.current_position.y,uav.current_position.z])  
+        positions = np.array(positions).reshape(number_of_drones,3)
+        cur = positions
+        goal = self.formation_points.reshape(number_of_drones,3)
+        edges = np.zeros((number_of_drones,number_of_drones))
+        for i in range(number_of_drones):
+            for j in range(number_of_drones):
+                distance = np.sqrt(np.square(cur[i] - goal[j]).sum())
+                edges[i,j] = distance
+        cost_matrix = edges
+
+        _,self.goal_indexes = hungarian(cost_matrix)
+        del positions
+
+
     def generateFormationPoints(self,base_center,number_of_drones,formation_params):
         if formation_params.formation_type == FORMATIONTYPES.common:
             points = self.cvx_polygon(number_of_drones,base_center,number_of_drones,formation_params.each_distance)
