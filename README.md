@@ -1,6 +1,6 @@
 ﺏ
-# GammaSwarm   
- The 2022 Gamma Team Integrated Swarm System Repository
+# GammaSwarm - Demo   
+ The 2022 Gamma Team Integrated Swarm System Repository Reduced In Scope for 1 Drone Navigation Flight
 
 # Setup 
 Firs create folder with name:
