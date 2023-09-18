@@ -16,6 +16,7 @@ def reason():
 
 modeList = [
             #TODO Simulation does not work with 1 agent, this mainSystem can work 1 drone but we have problem at simulation. Can't render drone.
+            #For information of parameters pls look at Parameters.py
             {MISSIONMODES.initialize  :      InitializerParams(number_of_agent = 2,simulation_enabled = True,real_enabled = False, starting_formation = FORMATIONTYPES.common, area_dimension = [(-1.6, 1.6), (-1.9, 1.9), (0, 1.5)])},
             {MISSIONMODES.take_off    :      TakeoffParams(takeoff_height = 0.7 ,threshold = 0.08)} , 
             {MISSIONMODES.loiter      :      LoiterParams(loiter_time = 3)} ,
@@ -37,6 +38,7 @@ modeList = [
 #Initialize ModesClass
 start_time = time.time()
 
+#Generate main Modes Class and execute Modes using ModeList
 ModeClass = Modes(modeList)
 freq = rospy.Rate(60)
 

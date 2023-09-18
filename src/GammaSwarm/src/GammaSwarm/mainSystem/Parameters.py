@@ -12,40 +12,41 @@ class InitializerParams:
         self.simulation_enabled = simulation_enabled #True or False
         self.real_enabled = real_enabled #True or False
         self.starting_formation = starting_formation #Starting Formation Types----> Look at enums.py
-        self.area_dimensions = np.array(area_dimension) #Flying environment dimension for the Path Planning Search Space
+        self.area_dimensions = np.array(area_dimension) #Flying environment dimension for the Path Planning Search Space [m] = [(xmin,xmax),(ymin,ymax),(zmin,zmax)]
 
 
 class FormationParams2D:
     def __init__(self,formation_type,each_distance,corner_count,threshold):
         self.formation_type = formation_type #2D Formation Types Look at enums---> only use 2D type here!
-        self.each_distance = each_distance #distance between agent
+        self.each_distance = each_distance #distance between agent [m]
         self.corner_count = corner_count #Total corner of 2d formation
-        self.threshold = threshold #Threshold in percentage %
+        self.threshold = threshold #Threshold in meters. Remaining Distance [m]
 
 
 class NavigationParams: 
-    def __init__(self,agressiveness_kt,max_velocity, navigation_waypoints, threshold, path_manipulate_coef = 1):
+    def __init__(self,agressiveness_kt,max_velocity, navigation_waypoints, threshold):
         self.agressiveness_kt = agressiveness_kt #This is parameter for how the movement of drones aggressive or not! If big, this means more aggresive.
-        self.path_manipulate_coef = path_manipulate_coef #For Path Planning, manipulation needed for accurate path.BU KATSAYI OBSTACLE FALSE IKEN 1 OLMALIDIR
-        self.max_velocity = max_velocity #Maximum Velocity of swarm center in m/s, used in trajectory generation constraint.
-        self.navigation_waypoints = navigation_waypoints #Navigation waypoints in list,which type of this Position() class. Look  at ------> State.py LISTE ICERISINDE POSITION CLASSI OLMALI
-        self.threshold = threshold #Threshold for swarm center position. In the percentage %. %X of final value!
+        self.max_velocity = max_velocity #Maximum Velocity of swarm center in m/s, used in trajectory generation constraint. [m/s]
+        self.navigation_waypoints = navigation_waypoints #Navigation waypoints in list,which type of this Position() class. [x,y] in [m]
+                                                         #Look  at ------> State.py LISTE ICERISINDE POSITION CLASSI OLMALI
+        self.threshold = threshold #Threshold for swarm center position. In the meters (distance to desired swarm center position) [m]
+
 
 class TakeoffParams:
     def __init__(self,takeoff_height,threshold):
-        self.takeoff_height = takeoff_height #Takeoff height in meter.
-        self.threshold = threshold #Threshold in percentage. Means %X of the final value.
+        self.takeoff_height = takeoff_height #Takeoff height in meter. [m]
+        self.threshold = threshold #Threshold in meters. Remaining Distance [m]
 
 
 class LandingParams:
     def __init__(self,threshold):
-        self.landing_waypoints = {} #Not used Also. This can be used for specific landing location
-        self.threshold = threshold #Threshold in percentage. Means that %X of the final value.
+        self.landing_waypoints = {} #Not used Also. This can be used for specific landing location 
+        self.threshold = threshold #Threshold in meters. Remaining Distance [m]
 
 
 class LoiterParams:
     def __init__(self,loiter_time):
-        self.loiter_time = loiter_time #Loiter time in second
+        self.loiter_time = loiter_time #Loiter time in seconds. [s]
 
 
 
