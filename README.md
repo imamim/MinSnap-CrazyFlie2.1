@@ -1,6 +1,6 @@
 ﺏ
-# GammaSwarm - Demo   
- The 2022 Gamma Team Integrated Swarm System Repository Reduced In Scope for 1 Drone Navigation Flight
+# MinSnap-CrazyFlie2.1   
+ The 2022 Gamma Team Integrated Swarm System Repository Reduced In Scope for 1 Drone Navigation Flight. It is open to development and its usability has been confirmed in swarm studies.
 
 # Setup 
 Firs create folder with name:
