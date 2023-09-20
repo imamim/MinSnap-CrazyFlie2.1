@@ -102,7 +102,7 @@ class UavClass:
 
         norm = math.sqrt(distancex**2+distancey**2+(temp_hedef_yukseklik-self.current_position.z)**2)
         # print("ID:",self.id,"X:",distancex,"Y:",distancey,"Z:",(temp_hedef_yukseklik-self.current_position.z))
-        #print("NORM",norm)
+        print("ID: ",self.id , " ERROR: ",norm,"\n")
         if norm<threshold:
             takeoff_completed = True
             takeoff_res_position = Position(takeoff_start_position.x,takeoff_start_position.y,hedef_yukseklik,0,0,0)
@@ -154,8 +154,11 @@ class UavClass:
         distance2d = math.sqrt(distancex**2 + distancey**2)
 
         norm = math.sqrt((hedef_position.x - self.current_position.x)**2+(hedef_position.y - self.current_position.y)**2+(hedef_position.z - self.current_position.z)**2)
-        print("ERROR:",norm)
+        #print("ERROR:",norm)
         # print("ID:",self.id,"X:",distancex,"Y:",distancey,"Z:",distancez,"\n", "VELOCITY",self.desired_velocity.x , self.desired_velocity.y , self.desired_velocity.z)
+        #format_float = "{:.2f}".format(norm)
+        print("ID: ",self.id , "  ERROR: ",norm,"\n")
+
         if norm < threshold:
             goTo_completed = True
             #TODO aslında burada hata var, ama bunu neglect edebiliriz. Cunku threshold degeri icindeyizdir demek oluyor bu! ---> Duzeltilebilir.
@@ -203,7 +206,7 @@ class UavClass:
         self.old_position.y = self.current_position.y
 
         norm = math.sqrt(distancex**2+distancey**2+distancez**2)
-        print("Land2:  ",norm)
+        print("Land2Ground:  ",norm)
         if norm<threshold:
             landing_completed = True
             self.initial_position = self.current_position
@@ -288,7 +291,8 @@ class UavClass:
         #print(desired_last_pose)
         diff = np.array([self.current_position.x-desired_last_pose[0],self.current_position.y-desired_last_pose[1],self.current_position.z-desired_last_pose[2]])
         norm = np.linalg.norm(diff)
-        print("navigation_norm",norm)
+        #print("navigation_norm",norm)
+        print("ID: ",self.id , "Navigation Norm: ",norm,"\n")
         if norm<threshold:
             navigation_completed = True
             self.initial_position = Position(desired_last_pose[0], desired_last_pose[1],desired_last_pose[2]) #Thats okey for other controller. PID mod bitsede son position goturur.
@@ -359,7 +363,12 @@ class UavClass:
             self.old_position.x = distancex
             self.old_position.y = distancey
             self.passing_loiter_time = time.time() - self.loiter_loop_start_time
-            print("PASSED TIME",self.passing_loiter_time)
+
+            norm = math.sqrt((self.loiter_position.x - self.current_position.x)**2+(self.loiter_position.y - self.current_position.y)**2+(self.loiter_position.z - self.current_position.z)**2)
+            format_float = "{:.2f}".format(self.passing_loiter_time)
+            print("ID: ",self.id , "  ERROR: ",norm," Passed Time: ",format_float,"\n")
+
+            #print("PASSED TIME",self.passing_loiter_time,)
             if self.passing_loiter_time>=duration:
                 loiter_completed = True
                 #I think this is must be current position.

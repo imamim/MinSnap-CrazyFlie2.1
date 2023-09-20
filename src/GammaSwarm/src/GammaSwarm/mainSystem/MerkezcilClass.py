@@ -311,7 +311,7 @@ class TrajectoryExecuter:
             self.initial_step_time = time.time() #Inıtıalize time
         
         self.t = time.time()- self.initial_step_time
-        print("T",self.t)
+        print("Passed Time T: ",self.t)
         desired_state = self.des_state(self.t)
         #desired_state.desired_velocity[2] += 0.125 #BUNU MELLINGER KONTROLCU KENDISI EKLIYOR GEREK YOK
         if self.t >= self.Tmax:
