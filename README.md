@@ -64,13 +64,13 @@ Download the package with git clone or from IDE.
 
 ```
 cd catkin_ws
-git clone https://github.com/ITU-GammaTeam/GammaSwarm-Demo.git
+git clone https://github.com/imamim/minsnap-crazyflie.git
 ```
 
 Then run the `catkin_make` command at main directory.
 
 ```
-cd GammaSwarm-Demo
+cd minsnap-crazyflie
 catkin_make
 ```
 
@@ -85,7 +85,7 @@ Go the main directory catkin_ws and do `catkin_make`
 
 ```
 cd 
-cd catkin_ws/GammaSwarm-Demo
+cd catkin_ws/minsnap-crazyflie
 catkin_make
 ```
 
@@ -104,7 +104,7 @@ source /opt/ros/noetic/setup.bash
 And add this two line you last line of .bashrc file:
 
 ```
-source /home/Your_Computer_username/catkin_ws/GammaSwarm-Demo/devel/setup.bash
+source /home/Your_Computer_username/catkin_ws/minsnap-crazyflie/devel/setup.bash
 ```
 
 After that close current terminal and open new terminal.
