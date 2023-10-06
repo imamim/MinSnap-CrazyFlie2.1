@@ -22,8 +22,8 @@ modeList = [
             {MISSIONMODES.take_off    :      TakeoffParams(takeoff_height = 1.0 ,threshold = 0.08)} , 
             {MISSIONMODES.loiter      :      LoiterParams(loiter_time = 5)} ,
             
-            #False for Real Flight!
-            {MISSIONMODES.navigation  :      NavigationParams(correct_error_with_pid = False ,agressiveness_kt = 30 ,max_velocity = 1, navigation_waypoints = [Position(1,1,1)], threshold = 0.08)},
+            #False for Real Flight! True for Simulation
+            {MISSIONMODES.navigation  :      NavigationParams(correct_error_with_pid = True ,agressiveness_kt = 50 ,max_velocity = 3, navigation_waypoints = [Position(1,1,1)], threshold = 0.08)},
             {MISSIONMODES.loiter      :      LoiterParams(loiter_time = 3)},
         
             {MISSIONMODES.landing     :      LandingParams(threshold = 0.07)},

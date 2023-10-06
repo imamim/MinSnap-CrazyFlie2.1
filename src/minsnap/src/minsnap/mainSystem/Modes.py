@@ -64,8 +64,6 @@ class Modes:
         del uav_result
 
 
-
-
     def loiterStep(self,loiter_params):
         #Controller or another think computation for drones. This is also means virtual computer on drones. (But we are not, we have only 1 base PC)
 
@@ -96,6 +94,7 @@ class Modes:
             self.Manager.uav.passing_loiter_time = 0 
             self.Manager.uav.loiter_active = False   
         del uav_result
+
 
     """"
     @Author: Muhammed Emin Hamamcı - github:imamim --> https://github.com/imamim/minSnap-crazyflie
@@ -235,33 +234,30 @@ class Modes:
 
 
     def landingStep(self,landing_params):
-        completed_list = []
-        self.Swarm.update_SwarmCenter() #Update swarm center using last data. Also we have synchronized using mutex!
 
+        uav = self.Manager.uav
         #Controller or another think computation for drones. This is also means virtual computer on drones. (But we are not, we have only 1 base PC)
-        for uav in self.Swarm.uav_list:
-            if uav.activation_flag == True:
-                uav_result = uav.landingPID(uav.initial_position,landing_params.threshold)
-                #print(uav_result,uav.id,"target height: ",takeoff_height,"Current height: ",uav.current_position.x,uav.current_position.y,uav.current_position.z)
-            else :
-                uav_result = True
-            completed_list.append(uav_result)
-            #Example of another algoirthm use for individual uavs.
-            uav.collisionAvoidance()
-            #For ROS generate Command Message in Class and after publish commands using this generated data! 
-            """
-            If there was a companion computer on each drone, each drone would publish its own location or command to autopilot. For the situation we have, 
-            this structure gives better results.
-            """
-            uav.generateCommandMessage()
-        #END OF COMPUTATION FOR EACH DRONE LOOP
+        if uav.activation_flag == True:
+            uav_result = uav.landingPID(uav.initial_position,landing_params.threshold)
+            #print(uav_result,uav.id,"target height: ",takeoff_height,"Current height: ",uav.current_position.x,uav.current_position.y,uav.current_position.z)
+        else :
+            uav_result = True
+        #Example of another algoirthm use for individual uavs.
+        uav.collisionAvoidance()
+        #For ROS generate Command Message in Class and after publish commands using this generated data! 
+        """
+        If there was a companion computer on each drone, each drone would publish its own location or command to autopilot. For the situation we have, 
+        this structure gives better results.
+        """
+        uav.generateCommandMessage()
+    #END OF COMPUTATION FOR EACH DRONE LOOP
 
-        self.Swarm.publishCommand()
+        self.Manager.publishCommand()
         
-        if all(completed_list) == True:
+        if uav_result == True:
             self.modeListIndex+=1
             self.mode = list(self.modeList[self.modeListIndex].keys())[0]         
-        del completed_list
+        del uav_result
 
 
 
