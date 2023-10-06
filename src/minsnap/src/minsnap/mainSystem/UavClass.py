@@ -8,7 +8,7 @@ fonksiyonları içeren sınıf kullanılacaktır.
 import rospy
 import numpy as np
 from State import *
-from GammaSwarm.msg import UavCommand, TrajectoryCommand
+from minsnap.msg import UavCommand, TrajectoryCommand
 import math
 import time
 from copy import deepcopy
@@ -54,7 +54,6 @@ class UavClass:
         self.loiter_active = False
         self.loiter_old_position = None
         self.old_omega = np.array([0,0,0])
-        self.formation_position = Position(0,0,0)
         self.position_wrt_center = Position(0,0,0) #TODO initialize edilmeli, swarm center'a göre yerdeki
         self.theoretical_position_wrt_center = Position(0,0,0)
         

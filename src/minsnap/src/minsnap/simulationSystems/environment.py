@@ -9,7 +9,7 @@ import rospy
 from SimulationParameter import *
 
 
-from GammaSwarm.srv import ServiceMessage
+from minsnap.srv import ServiceMessage
 
 
 class Environment:

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(GammaSwarm)
+project(minsnap)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -129,7 +129,7 @@ generate_messages(
 #yunus emre yigit commented this 
 catkin_package(
     INCLUDE_DIRS 
-    LIBRARIES GammaSwarm
+    LIBRARIES minsnap
     CATKIN_DEPENDS message_runtime rospy geometry_msgs std_msgs 
     DEPENDS system_lib
     #DEPENDS message_runtime

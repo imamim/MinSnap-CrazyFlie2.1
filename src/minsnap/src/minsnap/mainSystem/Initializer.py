@@ -10,10 +10,10 @@ from initializer_util import *
 
 import time
 import rospy
-from GammaSwarm.msg import UavState
-from GammaSwarm.srv import ServiceMessage
-from GammaSwarm.srv import ServiceMessageRequest
-from GammaSwarm.srv import RealServiceMessage, RealServiceMessageResponse
+from minsnap.msg import UavState
+from minsnap.srv import ServiceMessage
+from minsnap.srv import ServiceMessageRequest
+from minsnap.srv import RealServiceMessage, RealServiceMessageResponse
 
 import pybullet as p
 
@@ -33,29 +33,29 @@ def convertINITToArray(init):
         return INIT_XYZS
     
 
-def calculateInitialPose(init_params):
+def calculateInitialPose(number_of_agent):
     
     formation = Formation()
 
-    INIT_RPYS = np.array([[0, 0, i * (np.pi / 2) / init_params.number_of_agent] for i in range(init_params.number_of_agent)])
+    INIT_RPYS = np.array([[0, 0, i * (np.pi / 2) / number_of_agent] for i in range(number_of_agent)])
     
     
     H = .1
-    R = init_params.number_of_agent / 5.
+    R = number_of_agent / 5.
 
     radIntPoints = np.array(
-            [[R * np.cos((i / init_params.number_of_agent) * 2 * np.pi + np.pi / 2),
-              R * np.sin((i / init_params.number_of_agent) * 2 * np.pi + np.pi / 2) - R,
-              H] for i in range(init_params.number_of_agent)])
+            [[R * np.cos((i / number_of_agent) * 2 * np.pi + np.pi / 2),
+              R * np.sin((i / number_of_agent) * 2 * np.pi + np.pi / 2) - R,
+              H] for i in range(number_of_agent)])
     
     poses = []
     for ele in radIntPoints:
         poses.append(Position(ele[0], ele[1], ele[2]))
 
-    if init_params.starting_formation == "common":
-        formation.commonFormationPoints(poses, Position(0, 0, H))
-        INIT_XYZS = formation.formationPoints
-        INIT_XYZS = convertINITToArray(INIT_XYZS)
+    
+    formation.commonFormationPoints(poses, Position(0, 0, H))
+    INIT_XYZS = formation.formationPoints
+    INIT_XYZS = convertINITToArray(INIT_XYZS)
     init_state_dict = {"PoseArray": INIT_XYZS,"OrientationArray":INIT_RPYS}
 
     return init_state_dict
@@ -71,9 +71,13 @@ def systemInitializer(init_params):
         @In this block, if we only want to run a simulation, the init pose and init orientations 
         required to set up the simulation are calculated and published. 
         Then, when the initialization mode changes, these nodes should be closed.
+
+        For solve simulation bug, generate 2 drones in the simulation
         """
 
-        initial_state_dict = calculateInitialPose(init_params)
+        number_of_agent = 2
+
+        initial_state_dict = calculateInitialPose(number_of_agent)
         
         rospy.wait_for_service("Simulation-Initializer-Server",timeout=10)
         
@@ -84,7 +88,7 @@ def systemInitializer(init_params):
         #FullState service message object formed  
         initial_pose_msg_list = ServiceMessageRequest()
 
-        for i in range(0,init_params.number_of_agent):
+        for i in range(0,number_of_agent):
             msg = UavState()
             uav_pose = initial_position_list[i]
             uav_orientation = initial_orientation_list[i]
@@ -118,6 +122,8 @@ def systemInitializer(init_params):
         """
         @In this block, if we just want to run it for real, the necessary initial position data is taken and given to the system. 
         Then, when the initialization mode changes, these nodes must be closed.        
+
+        In real flight we are only support 1 drones navigation! There is no change. Because position data coming from real side!
         """
 
         rospy.wait_for_service("Real-Initializer-Server",timeout=10)

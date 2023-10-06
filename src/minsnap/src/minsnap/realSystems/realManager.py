@@ -14,8 +14,8 @@ import cflib.crtp
 from State import * 
 import rospy 
 import time 
-from GammaSwarm.msg import UavState, FullState, FullTrajectoryCommand
-from GammaSwarm.srv import RealServiceMessage, RealServiceMessageResponse
+from minsnap.msg import UavState, FullState, FullTrajectoryCommand
+from minsnap.srv import RealServiceMessage, RealServiceMessageResponse
 from gammaSwarm import * 
 import numpy as np
 from Parameters import *

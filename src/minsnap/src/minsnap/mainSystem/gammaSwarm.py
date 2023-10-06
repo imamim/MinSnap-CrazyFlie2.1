@@ -5,7 +5,7 @@ from State import Position,Velocity,DesiredTrajectoryState
 from UavClass import UavClass
 import pybullet as p
 from threading import Lock
-from GammaSwarm.msg import FullState, FullCommand, FullTrajectoryCommand
+from minsnap.msg import FullState, FullCommand, FullTrajectoryCommand
 from geometry_msgs.msg import Pose
 
 

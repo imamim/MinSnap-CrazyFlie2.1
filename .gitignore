@@ -134,6 +134,6 @@ dmypy.json
 .vscode/browse.vc.db-shm
 .vscode/c_cpp_properties.json
 .vscode/settings.json
-src/GammaSwarm/.vscode/browse.vc.db
-src/GammaSwarm/.vscode/browse.vc.db-shm
+src/minsnap/.vscode/browse.vc.db
+src/minsnap/.vscode/browse.vc.db-shm
 src/CMakeLists.txt

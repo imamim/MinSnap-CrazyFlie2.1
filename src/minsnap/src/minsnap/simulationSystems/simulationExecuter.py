@@ -6,10 +6,10 @@ import pybullet as p
 import time
 
 import rospy
-from GammaSwarm.msg import FullCommand
-from GammaSwarm.msg import FullState
-from GammaSwarm.msg import UavState
-from GammaSwarm.msg import FullTrajectoryCommand
+from minsnap.msg import FullCommand
+from minsnap.msg import FullState
+from minsnap.msg import UavState
+from minsnap.msg import FullTrajectoryCommand
 
 from gym_pybullet_drones.utils.utils import sync
 from environment import *
