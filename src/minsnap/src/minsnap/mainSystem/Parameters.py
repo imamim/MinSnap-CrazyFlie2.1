@@ -14,7 +14,8 @@ class InitializerParams:
 
 
 class NavigationParams: 
-    def __init__(self,agressiveness_kt,max_velocity, navigation_waypoints, threshold):
+    def __init__(self, correct_error_with_pid, agressiveness_kt, max_velocity, navigation_waypoints, threshold):
+        self.correct_error_with_pid = correct_error_with_pid #For real flight performance this must be equal = FALSE
         self.agressiveness_kt = agressiveness_kt #This is parameter for how the movement of drones aggressive or not! If big, this means more aggresive.
         self.max_velocity = max_velocity #Maximum Velocity of swarm center in m/s, used in trajectory generation constraint. [m/s]
         self.navigation_waypoints = navigation_waypoints #Navigation waypoints in list,which type of this Position() class. [x,y] in [m]

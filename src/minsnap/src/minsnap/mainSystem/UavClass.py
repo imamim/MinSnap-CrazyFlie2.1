@@ -54,8 +54,6 @@ class UavClass:
         self.loiter_active = False
         self.loiter_old_position = None
         self.old_omega = np.array([0,0,0])
-        self.position_wrt_center = Position(0,0,0) #TODO initialize edilmeli, swarm center'a göre yerdeki
-        self.theoretical_position_wrt_center = Position(0,0,0)
         
 
     def takeOffPID(self,takeoff_start_position, hedef_yukseklik, threshold,duration = None): #TODO Start position+hedef yukseklik
@@ -109,7 +107,7 @@ class UavClass:
 
         return takeoff_completed
 
-    def goToPID(self,hedef_position,threshold,swarm_center):
+    def goToPID(self,hedef_position,threshold):
         goTo_completed = False
         distance_dz = 0
         distance_iz = 0
@@ -162,7 +160,6 @@ class UavClass:
             #TODO aslında burada hata var, ama bunu neglect edebiliriz. Cunku threshold degeri icindeyizdir demek oluyor bu! ---> Duzeltilebilir.
             #TODO BURAYA BAK
             self.formation_position = hedef_position
-            self.position_wrt_center = Position(self.current_position.x - swarm_center.x, self.current_position.y-swarm_center.y,self.current_position.z-swarm_center.z)
             self.initial_position = hedef_position
        
         return goTo_completed
@@ -232,34 +229,6 @@ class UavClass:
         return landing_flag
 
 
-    def navigationEqualizer(self,traj_pos,traj_vel,traj_acc,traj_yaw,traj_omega):
-        "Calculate Trajectory Output Without controller"
-        r_diff = np.array([self.position_wrt_center.x,self.position_wrt_center.y,self.position_wrt_center.z]) #Hep sabit bu position_wrt_center ? Traj boyunca
-        velocity = traj_vel + np.cross(traj_omega,r_diff)
-        alpha = (traj_omega-self.old_omega)*60
-        self.old_omega = traj_omega.copy()
-        acceleration = traj_acc + np.cross(alpha,r_diff) - (np.linalg.norm(traj_omega)**2)*r_diff
-        position = r_diff + traj_pos
-        
-        self.desired_trajectory_position.x = position[0]
-        self.desired_trajectory_position.y = position[1]
-        self.desired_trajectory_position.z = position[2]
-
-        self.desired_trajectory_velocity.x = velocity[0]
-        self.desired_trajectory_velocity.y = velocity[1]
-        self.desired_trajectory_velocity.z = velocity[2]
-        
-        self.desired_trajectory_acceleration.x = acceleration[0]
-        self.desired_trajectory_acceleration.y = acceleration[1]
-        self.desired_trajectory_acceleration.z = acceleration[2]
-
-        self.desired_trajectory_yaw = traj_yaw
-
-        self.desired_trajectory_omega.x = traj_omega[0]
-        self.desired_trajectory_omega.y = traj_omega[1]
-        self.desired_trajectory_omega.z = traj_omega[2]
-
-
     def individualNavigationEqualizer(self,desired_traj_state): #TODO Karısılıklık olmamasi icin fonksiyon ismi degistirilebilir!
         self.desired_trajectory_position.x = desired_traj_state.desired_position[0]
         self.desired_trajectory_position.y = desired_traj_state.desired_position[1]
@@ -279,28 +248,11 @@ class UavClass:
         self.desired_trajectory_omega.y = desired_traj_state.desired_omega[1]
         self.desired_trajectory_omega.z = desired_traj_state.desired_omega[2]
 
-
-    def calculateNavigationError(self,last_point,swarm_center,threshold):
-        "Formasyon halindeki hesap"
-        navigation_completed = False
-        r_diff = np.array([self.position_wrt_center.x,self.position_wrt_center.y,self.position_wrt_center.z])
-        #last point swarm center'in olması gereken pointti
-        desired_last_pose = last_point+r_diff #Last position!
-        #print(desired_last_pose)
-        diff = np.array([self.current_position.x-desired_last_pose[0],self.current_position.y-desired_last_pose[1],self.current_position.z-desired_last_pose[2]])
-        norm = np.linalg.norm(diff)
-        #print("navigation_norm",norm)
-        print("ID: ",self.id , "Navigation Norm: ",norm,"\n")
-        if norm<threshold:
-            navigation_completed = True
-            self.initial_position = Position(desired_last_pose[0], desired_last_pose[1],desired_last_pose[2]) #Thats okey for other controller. PID mod bitsede son position goturur.
-            self.position_wrt_center = Position(desired_last_pose[0] - swarm_center.x, desired_last_pose[1]-swarm_center.y,desired_last_pose[2]-swarm_center.z)
-
-        return navigation_completed
     
-    
-    def individualCalculateNavigationError(self,last_point,swarm_center,threshold):
-        "Individual hesap"
+    def individualCalculateNavigationError(self,last_point,threshold):
+        """
+        Calculate individual Navigation Error
+        """
         navigation_completed = False
         #last point swarm center'in olması gereken pointti
         desired_last_pose = last_point
@@ -311,7 +263,6 @@ class UavClass:
         if norm<threshold:
             navigation_completed = True
             self.initial_position = Position(desired_last_pose[0], desired_last_pose[1],desired_last_pose[2])
-            self.position_wrt_center = Position(desired_last_pose[0] - swarm_center.x, desired_last_pose[1]-swarm_center.y,desired_last_pose[2]-swarm_center.z)
         return navigation_completed
 
 
@@ -460,7 +411,7 @@ class UavClass:
 
 
     #TODO Not a Good Solution. Initial Position vs. Problem
-    def loiterNoTime(self,swarm_center):
+    def loiterNoTime(self):
         #self.loiter_loop_start_time = time.time()
         #print("INITIAL POSE ALINDI")
         self.loiter_position = self.initial_position
@@ -501,55 +452,5 @@ class UavClass:
         print("LOITER NORM :",norm) #GERCEKTE NASIL BIR STABILLIGE SAHIP KRITIK
 
 
-    def loiterForWait(self,duration,swarm_center):
-        if self.loiter_active == False:
-            self.loiter_loop_start_time = time.time()
-            #print("INITIAL POSE ALINDI")
-            self.loiter_position = self.current_position
-            self.loiter_old_position = self.current_position
-            self.loiter_active = True
-            
-        elif self.loiter_active == True:
-            loiter_completed = False
-            #hedef_yukseklik = self.loiter_position.z + ((5-self.loiter_position.z)/10)*(max((self.loiter_position.z/3),0.5))
-            hedef_yukseklik = self.loiter_position.z
-            distance_dz = 0
-            distance_iz = 0
-            distance_dx = 0
-            distance_ix = 0
-            distance_dy = 0
-            distance_iy = 0
-            Kp = 0.06
-            Kd = 0.001
-            Ki = 0.53
-            distancez = hedef_yukseklik - self.current_position.z
-            distancex = self.loiter_position.x - self.current_position.x
-            distancey = self.loiter_position.y - self.current_position.y
-            distance_dz = max(min(distancez - self.old_position.z, 8),-8)
-            distance_dx = max(min(distancex - self.old_position.x, 8),-8)
-            distance_dy = max(min(distancey - self.old_position.y, 8),-8)
-            distance_iz = max(min(distancez + distance_iz, 8),-8)
-            distance_ix = max(min(distancex + distance_ix, 8),-8)
-            distance_iy = max(min(distancey + distance_iy, 8),-8)
-            pid_z = Kp*distancez + Kd*distance_dz + Ki*distance_iz
-            pid_x = Kp*distancex + Kd*distance_dx + Ki*distance_ix
-            pid_y = Kp*distancey + Kd*distance_dy + Ki*distance_iy
-            self.desired_velocity.z = pid_z
-            self.desired_velocity.x = pid_x
-            self.desired_velocity.y = pid_y
-            #print(self.desired_velocity.x , self.desired_velocity.y, self.desired_velocity.z)
-            self.old_position.z = distancez
-            self.old_position.x = distancex
-            self.old_position.y = distancey
-            self.passing_loiter_time = time.time() - self.loiter_loop_start_time
-            #print(self.passing_loiter_time)
-            norm = np.linalg.norm(np.array([self.current_position.x - self.loiter_position.x,self.current_position.y - self.loiter_position.y,self.current_position.z - self.loiter_position.z]))
-            print("LOITER NORM :",norm) #GERCEKTE NASIL BIR STABILLIGE SAHIP KRITIK
 
-            print("PASSED TIME",self.passing_loiter_time)
-            if self.passing_loiter_time>=duration:
-                loiter_completed = True
-                self.position_wrt_center = Position(self.loiter_position.x - swarm_center.x, self.loiter_position.y-swarm_center.y,self.loiter_position.z-swarm_center.z)
-                self.initial_position = deepcopy(self.loiter_position)#deepcopy(self.current_position)#deepcopy(self.loiter_position)
-            return loiter_completed
 

@@ -20,9 +20,10 @@ modeList = [
             {MISSIONMODES.initialize  :      InitializerParams(simulation_enabled = True,real_enabled = False, area_dimension = [(-1.6, 1.6), (-1.9, 1.9), (0, 1.5)])},
             
             {MISSIONMODES.take_off    :      TakeoffParams(takeoff_height = 1.0 ,threshold = 0.08)} , 
-            {MISSIONMODES.loiter      :      LoiterParams(loiter_time = 10)} ,
+            {MISSIONMODES.loiter      :      LoiterParams(loiter_time = 5)} ,
             
-            {MISSIONMODES.navigation  :      NavigationParams(agressiveness_kt = 30 ,max_velocity = 1, navigation_waypoints = [Position(1,1,1)], threshold = 0.08)},
+            #False for Real Flight!
+            {MISSIONMODES.navigation  :      NavigationParams(correct_error_with_pid = False ,agressiveness_kt = 30 ,max_velocity = 1, navigation_waypoints = [Position(1,1,1)], threshold = 0.08)},
             {MISSIONMODES.loiter      :      LoiterParams(loiter_time = 3)},
         
             {MISSIONMODES.landing     :      LandingParams(threshold = 0.07)},
@@ -51,7 +52,11 @@ while not rospy.is_shutdown():
         ModeClass.loiterStep(ModeClass.modeList[ModeClass.modeListIndex].get(ModeClass.mode))
 
     if ModeClass.mode == MISSIONMODES.navigation:
-        ModeClass.simpleNavigationStep(ModeClass.modeList[ModeClass.modeListIndex].get(ModeClass.mode))
+        if ModeClass.modeList[ModeClass.modeListIndex].get(ModeClass.mode).correct_error_with_pid == True:
+            ModeClass.correctedNavigationStep(ModeClass.modeList[ModeClass.modeListIndex].get(ModeClass.mode))
+
+        elif ModeClass.modeList[ModeClass.modeListIndex].get(ModeClass.mode).correct_error_with_pid == False:
+            ModeClass.simpleNavigationStep(ModeClass.modeList[ModeClass.modeListIndex].get(ModeClass.mode))
 
     if ModeClass.mode == MISSIONMODES.landing:
         ModeClass.landingStep(ModeClass.modeList[ModeClass.modeListIndex].get(ModeClass.mode))
