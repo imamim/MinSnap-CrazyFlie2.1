@@ -20,9 +20,7 @@ modeList = [
             {MISSIONMODES.initialize  :      InitializerParams(simulation_enabled = True,real_enabled = False, area_dimension = [(-1.6, 1.6), (-1.9, 1.9), (0, 1.5)])},
             
             {MISSIONMODES.take_off    :      TakeoffParams(takeoff_height = 1.0 ,threshold = 0.08)} , 
-            {MISSIONMODES.loiter      :      LoiterParams(loiter_time = 3)} ,
-
-            {MISSIONMODES.loiter      :      LoiterParams(loiter_time = 3)},
+            {MISSIONMODES.loiter      :      LoiterParams(loiter_time = 10)} ,
             
             {MISSIONMODES.navigation  :      NavigationParams(agressiveness_kt = 30 ,max_velocity = 1, navigation_waypoints = [Position(1,1,1)], threshold = 0.08)},
             {MISSIONMODES.loiter      :      LoiterParams(loiter_time = 3)},
@@ -48,9 +46,6 @@ while not rospy.is_shutdown():
     
     if ModeClass.mode == MISSIONMODES.take_off:
         ModeClass.takeOffStep(ModeClass.modeList[ModeClass.modeListIndex].get(ModeClass.mode))
-
-    if ModeClass.mode == MISSIONMODES.formation2D:
-        ModeClass.formationStep2D(ModeClass.modeList[ModeClass.modeListIndex].get(ModeClass.mode))
 
     if ModeClass.mode == MISSIONMODES.loiter:
         ModeClass.loiterStep(ModeClass.modeList[ModeClass.modeListIndex].get(ModeClass.mode))

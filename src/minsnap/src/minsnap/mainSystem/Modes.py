@@ -1,6 +1,6 @@
 #Rahman ve Rahim Olan Allah'ın Adıyla,Hamd O'na Mahsustur!
 #Muvaffakiyetimiz Yalnızca O'na aittir!
-from gammaSwarm import GammaSwarm
+from minsnapManager import MinsnapManager
 from MerkezcilClass import *
 from UavClass import *
 from Initializer import *
@@ -23,9 +23,8 @@ class Modes:
 
         #Haberleşme yapısı oluşturuldu,sistem kuruldu
 
-        self.Swarm = GammaSwarm(init_params,initial_position)
+        self.Manager = MinsnapManager(init_params,initial_position)
         #merkezcil classlar oluşturuldu
-        self.central_formation = FormationClass()
         self.trajectory_class = TrajGenerator()
 
         self.area_dimension = init_params.area_dimensions
@@ -37,126 +36,121 @@ class Modes:
 
 
     def takeOffStep(self,takeoff_params):
-        completed_list = []
-        self.Swarm.update_SwarmCenter() #Update swarm center using last data. Also we have synchronized using mutex!
+        #self.Swarm.update_SwarmCenter() #Update swarm center using last data. Also we have synchronized using mutex!
 
         #Controller or another think computation for drones. This is also means virtual computer on drones. (But we are not, we have only 1 base PC)
-        for uav in self.Swarm.uav_list:
-            if uav.activation_flag == True:
-                uav_result = uav.takeOffPID(uav.initial_position,takeoff_params.takeoff_height,self.Swarm.swarm_center,takeoff_params.threshold)
-            else :
-                uav_result = True
+        uav = self.Manager.uav
+        if uav.activation_flag == True:
+            uav_result = uav.takeOffPID(uav.initial_position, takeoff_params.takeoff_height, takeoff_params.threshold)
+        else :
+            uav_result = True
 
-            completed_list.append(uav_result)
+        #Example of another algoirthm use for individual uavs.
+        uav.collisionAvoidance()
 
-            #Example of another algoirthm use for individual uavs.
-            uav.collisionAvoidance()
+        #For ROS generate Command Message in Class and after publish commands using this generated data! 
+        """
+        If there was a companion computer on each drone, each drone would publish its own location or command to autopilot. For the situation we have, 
+        this structure gives better results.
+        """
+        uav.generateCommandMessage()
 
-            #For ROS generate Command Message in Class and after publish commands using this generated data! 
-            """
-            If there was a companion computer on each drone, each drone would publish its own location or command to autopilot. For the situation we have, 
-            this structure gives better results.
-            """
-            uav.generateCommandMessage()
-        #END OF COMPUTATION FOR EACH DRONE LOOP
-
-        self.Swarm.publishCommand()
+        self.Manager.publishCommand()
         
         #Change Mode when all drones complete works, (inactive drones always return true)
-        if all(completed_list) == True:
-            self.Swarm.update_SwarmCenter() #-> Eger ki kabul edilebilir sınırlar icerisinde isek mod bitiminde swarm_center'ımızı guncelledik. No Problem
+        if uav_result == True:
             self.modeListIndex+=1
             self.mode = list(self.modeList[self.modeListIndex].keys())[0]        
-        del completed_list
+        del uav_result
 
 
 
 
     def loiterStep(self,loiter_params):
-        completed_list = []
-        self.Swarm.update_SwarmCenter() #Update swarm center using last data. Also we have synchronized using mutex!
-        
         #Controller or another think computation for drones. This is also means virtual computer on drones. (But we are not, we have only 1 base PC)
-        for uav in self.Swarm.uav_list:
-            if uav.activation_flag == True:
-                uav_result = uav.loiter(loiter_params.loiter_time,self.Swarm.swarm_center)
-            else :
-                uav_result = True #Bundan dolayı sıkıntı oluyor!!!! Activation Flag Mevzusu
 
-            completed_list.append(uav_result)
+        uav = self.Manager.uav
+        if uav.activation_flag == True:
+            uav_result = uav.loiter(loiter_params.loiter_time)
+        else :
+            uav_result = True #Bundan dolayı sıkıntı oluyor!!!! Activation Flag Mevzusu
 
-            #Example of another algoirthm use for individual uavs.
-            uav.collisionAvoidance()
+        #Example of another algoirthm use for individual uavs.
+        uav.collisionAvoidance()
 
-            #For ROS generate Command Message in Class and after publish commands using this generated data! 
-            """
-            If there was a companion computer on each drone, each drone would publish its own location or command to autopilot. For the situation we have, 
-            this structure gives better results.
-            """
-            uav.generateCommandMessage()
-        #END OF COMPUTATION FOR EACH DRONE LOOP
+        #For ROS generate Command Message in Class and after publish commands using this generated data! 
+        """
+        If there was a companion computer on each drone, each drone would publish its own location or command to autopilot. For the situation we have, 
+        this structure gives better results.
+        """
+        uav.generateCommandMessage()
+    #END OF COMPUTATION FOR EACH DRONE LOOP
 
-        self.Swarm.publishCommand()
+        self.Manager.publishCommand()
 
         #Change Mode when all drones complete works, (inactive drones always return true)
-        if all(completed_list) == True:
-            self.Swarm.update_SwarmCenter() #-> Eger ki kabul edilebilir sınırlar icerisinde isek mod bitiminde swarm_center'ımızı guncelledik. No Problem
+        if uav_result == True:
             self.modeListIndex+=1
             self.mode = list(self.modeList[self.modeListIndex].keys())[0]
-            for uav in self.Swarm.uav_list:
-                uav.passing_loiter_time = 0 
-                uav.loiter_active = False   
-        del completed_list
+            #Reset Loiter
+            self.Manager.uav.passing_loiter_time = 0 
+            self.Manager.uav.loiter_active = False   
+        del uav_result
 
-
-
-    def formationStep2D(self,formation_params):
+    """"
+    @Author: Muhammed Emin Hamamcı - github:imamim --> https://github.com/imamim/minSnap-CrazyFlie2.1
+    """
+    #TODO If usage neede, pls go in the mission.py ---> change simpleNavigationStep() ---->individualNavigationStep()
+    #Pls use only 1 drone when flight! Elhamdulillah navigation cozuldu
+    #This function for 1 Drones TESTING THE TRAJECTORY
+    def individualNavigationStep(self,navigation_params):
         completed_list = []
-        self.Swarm.update_SwarmCenter() #Update swarm center using last data. Also we have synchronized using mutex!
+        self.Swarm.update_SwarmCenter()
 
-        # If the formation has not been created when we come to this mode, calculations are made once and then the operations are continued using these values. 
-        # This flag is reset at the end of the mode
-        if self.central_formation.formation_created == False:
-            self.central_formation.meanAnglePointCalculator(self.Swarm.uav_count,self.Swarm.uav_list,self.Swarm.swarm_center)
-            self.central_formation.generateFormationPoints(self.Swarm.swarm_center,self.Swarm.uav_count,formation_params)
-            self.central_formation.FairMacar(self.Swarm.uav_list,self.Swarm.uav_count)
-            self.central_formation.formation_created = True
-    
-        #Controller or another think computation for drones. This is also means virtual computer on drones. (But we are not, we have only 1 base PC)
-        i = 0
+        #Bismillahirrahmanirrahim. Bizim buradaki amacımız navigation ile hedefe yaklaşabileceğimiz kadar yaklaşmak. Ardından eger hala varamadıysak.GoTo ile 
+        #ihtiyac duyulan threshold degerine dronelar sokulur. GoTo mod olarak veyahut burada cagırılabılır! 
+        #Mode baslangıcında trajectory uretilir ve bir daha buraya girmez!
+        if self.trajectory_class.trajectory_generated == False:
+            #Hızlandırmalıyız bu generation'u
+            self.trajectory_class.generate_trajectory(self.Swarm.uav_list[0].current_position,navigation_params.navigation_waypoints,navigation_params.max_velocity,navigation_params.agressiveness_kt)
+            self.trajectory_class.trajectory_generated = True
+            #TODO Trajectory Executer olusturuldugunda ilk stebi donse ve sonrasında steplense iyi olabilir ? veyahut timedan ayarlayacagım!
+            self.trajectory_executer = TrajectoryExecuter(des_state = self.trajectory_class.get_des_state,Tmax = self.trajectory_class.TS[-1])
+            #Simdi bunu kurduk her trajectory olusturulunca tekrar kurulacak ve steplenecek
+
+        #Bismillahirrahmanirrahim
+        desired_traj_state,traj_completed = self.trajectory_executer.step() #t = 0,0+1/56,0+2/56,......
+        #Kontrol Stateleri:
+        #1- Time'ın Tmax'ı geçmiş olması
+        #2- Sürü merkezinin hedef noktasına olan uzaklığı
+        #3- Veya her drone için
+
         for uav in self.Swarm.uav_list:
             if uav.activation_flag == True:
-                uav_result = uav.goToPID(Position(self.central_formation.formation_points[self.central_formation.goal_indexes[i]][0],self.central_formation.formation_points[self.central_formation.goal_indexes[i]][1],self.central_formation.formation_points[self.central_formation.goal_indexes[i]][2]),formation_params.threshold,self.Swarm.swarm_center)
-                i+=1
+                #Update Desired Setpoint
+                uav.individualNavigationEqualizer(desired_traj_state)
+                #Calculate actual error
+                uav_result = uav.individualCalculateNavigationError(self.trajectory_class.waypoints[-1],self.Swarm.swarm_center,navigation_params.threshold) #After navigation, if norm<Thrsehold uav_result become True
+                #Not used #Example of another algoirthm use for individual uavs.
+                uav.collisionAvoidance()
+                #Then update message!
+                uav.generateTrajectoryCommandMessage()
             else :
                 uav_result = True
-                i+=1
 
             completed_list.append(uav_result)
 
-            #Example of another algoirthm use for individual uavs.
-            uav.collisionAvoidance()
-            
-            #For ROS generate Command Message in Class and after publish commands using this generated data! 
-            """
-            If there was a companion computer on each drone, each drone would publish its own location or command to autopilot. For the situation we have, 
-            this structure gives better results.
-            """
-            uav.generateCommandMessage()
-        #END OF COMPUTATION FOR EACH DRONE LOOP
-
-        self.Swarm.publishCommand()
+        self.Swarm.publishTrajectoryCommand()
         
-        #Change Mode when all drones complete works, (inactive drones always return true)
-        if all(completed_list) == True:
-            self.Swarm.update_SwarmCenter() #-> Eger ki kabul edilebilir sınırlar icerisinde isek mod bitiminde swarm_center'ımızı guncelledik. No Problem
+        if traj_completed == True: #and: #traj_completed == True:
+            print("BITTTTTTIIIII",self.Swarm.uav_list[0].current_position.x,self.Swarm.uav_list[0].current_position.y,self.Swarm.uav_list[0].current_position.z)
+            self.Swarm.uav_list[0].initial_position = self.Swarm.uav_list[0].current_position
             self.modeListIndex+=1
             self.mode = list(self.modeList[self.modeListIndex].keys())[0] 
-            self.central_formation.formation_created = False
+            self.trajectory_class.trajectory_generated = False
+            del self.trajectory_executer
             #TODO TUM PARAMETRELER SIFIRLANACK MERKEZCILCLASSTAKI        
         del completed_list
-
-
 
 
     def simpleNavigationStep(self,navigation_params):

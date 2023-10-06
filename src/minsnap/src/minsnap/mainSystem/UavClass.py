@@ -58,7 +58,7 @@ class UavClass:
         self.theoretical_position_wrt_center = Position(0,0,0)
         
 
-    def takeOffPID(self,takeoff_start_position, hedef_yukseklik, swarm_center, threshold,duration = None): #TODO Start position+hedef yukseklik
+    def takeOffPID(self,takeoff_start_position, hedef_yukseklik, threshold,duration = None): #TODO Start position+hedef yukseklik
         temp_hedef_yukseklik = hedef_yukseklik
         manipulated_hedef_yukseklik = hedef_yukseklik
         takeoff_completed = False
@@ -105,7 +105,6 @@ class UavClass:
         if norm<threshold:
             takeoff_completed = True
             takeoff_res_position = Position(takeoff_start_position.x,takeoff_start_position.y,hedef_yukseklik,0,0,0)
-            self.position_wrt_center = Position(self.current_position.x - swarm_center.x, self.current_position.y-swarm_center.y,self.current_position.z-swarm_center.z)
             self.initial_position = takeoff_res_position
 
         return takeoff_completed
@@ -317,7 +316,7 @@ class UavClass:
 
 
 
-    def loiter(self,duration,swarm_center):
+    def loiter(self,duration):
         if self.loiter_active == False:
             self.loiter_loop_start_time = time.time()
             #print("INITIAL POSE ALINDI")
@@ -371,8 +370,8 @@ class UavClass:
             if self.passing_loiter_time>=duration:
                 loiter_completed = True
                 #I think this is must be current position.
-                self.position_wrt_center = Position(self.current_position.x - swarm_center.x, self.current_position.y-swarm_center.y,self.current_position.z-swarm_center.z)
                 self.initial_position = deepcopy(self.loiter_position)#deepcopy(self.current_position)#deepcopy(self.loiter_position) #Eger ki istenen pozisyona ulasmadı ise errora sebep olur
+            
             return loiter_completed
 
 
