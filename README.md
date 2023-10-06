@@ -1,23 +1,18 @@
 ﺏ
-# MinSnap-CrazyFlie2.1   
- The 2022 Gamma Team Integrated Swarm System Repository Reduced In Scope for 1 Drone Navigation Flight. It is open to development and its usability has been confirmed in swarm studies.
+# minsnap-crazyflie  
+ The 2022 Gamma Team Integrated Swarm System Repository Reduced In Scope for 1 Drone Navigation Flight. It is open to development and its usability has been confirmed in swarm studies. This repository covers Minimum Snap Aggressive Trajectory Generation that passes through specific waypoints.
 
 ﺏ
-
 <img src="https://github.com/ITU-GammaTeam/GammaSwarm-Demo/blob/main/logo.png" width="720">
 
-
-# GammaSwarm-Demo 
-
-The 2022 Gamma Team Integrated Swarm System Repository reduced in scope for any number of drones for actions:
+The 2022 Gamma Team Minimum Snap Trajectory Repository reduced in scope for 1 drones that covers this action:
 
 - Takeoff 
 - Loiter
-- 2D Formation 
 - Navigation Flight
 - Landing
 
-with _CrazyFlie 2.1_ drones. It is open to development and its usability has been confirmed in swarm studies.For more information please look at wiki of this project.
+with _CrazyFlie 2.1_ drones. It is open to development and its usability has been confirmed in swarm studies.
 
 
 **Or you can look Teknofest 2023 Heterogeneous Swarm Robots Competition _[Project Report](https://drive.google.com/file/d/1Wdwlqqi9w5jY0oGLyqyqK5ytAj6Xoze8/view?usp=sharing)_ 
@@ -42,14 +37,6 @@ This repository was developed on Ubuntu 20.04 and all tests were performed in th
 Ubuntu 20.04
 ROS Noetic :
 http://wiki.ros.org/noetic/Installation/Ubuntu
-```
-
-And other libraries:
-
-```
-pip3 install shapely
-pip3 install rtree
-pip3 install plotly
 ```
 
 ### Setup 
@@ -77,7 +64,7 @@ catkin_make
 After make, install pybullet 
 
 ```
-cd src/GammaSwarm/src/
+cd src/minsnap/src/
 pip3 install -e .
 ```
 
@@ -116,20 +103,20 @@ After that close current terminal and open new terminal.
 For V1.0 of system, you can use this 1 line code (After Setup Process you can do this):
 
 ```
-roslaunch GammaSwarm allRun.launch
+roslaunch minsnap allRun.launch
 ```
 
 If you want configure of mission parameter please refer this code:
 
 ```
-src/GammaSwarm/src/GammaSwarm/mainSystem/mission.py
+src/minsnap/src/minsnap/mainSystem/mission.py
 ```
 
 For more information about all parameters please refer this 2 code which that given relative path!
 
 ```
-src/GammaSwarm/src/GammaSwarm/mainSystem/Parameters.py
-src/GammaSwarm/src/GammaSwarm/simulationSystems/SimulationParameter.py
+src/minsnap/src/minsnap/mainSystem/Parameters.py
+src/minsnap/src/minsnap/simulationSystems/SimulationParameter.py
 ```
 
 ### Example
